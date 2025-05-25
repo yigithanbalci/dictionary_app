@@ -1,12 +1,19 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:learneng/app/modules/favorites_tab/views/favorites_tab_view.dart';
+import 'package:learneng/app/modules/history_tab/views/history_tab_view.dart';
+import 'package:learneng/app/modules/search_tab/views/search_tab_view.dart';
+import 'package:learneng/app/modules/settings_tab/views/settings_tab_view.dart';
 
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
-  const HomeView({super.key});
+  HomeView({super.key});
+  final List<Tabs> tabList = Tabs.values.toList();
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +44,19 @@ class HomeView extends GetView<HomeController> {
                 color: const Color(0xFFFFFFFF),
                 height: 658.h,
                 width: 375.w,
-                child: controller.selectedTab.value.widget,
+                child: PageView.builder(
+                  controller: controller.pageController,
+                  itemCount: tabList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    // controller.selectedTab.value.widget
+                    return tabList[index].widget;
+                  },
+                ),
               ),
               TabBar(
-                selectedTab: controller.selectedTab.value,
+                tabIndex: controller.tabIndex.value,
                 callBack: controller.handleTabSelection,
+                tabList: tabList,
               ),
               Container(color: const Color(0x88E8E8E8), height: 12.h),
             ],
@@ -53,9 +68,15 @@ class HomeView extends GetView<HomeController> {
 }
 
 class TabBar extends StatelessWidget {
-  const TabBar({super.key, required this.selectedTab, required this.callBack});
-  final void Function(Tabs) callBack;
-  final Tabs selectedTab;
+  const TabBar({
+    super.key,
+    required this.tabIndex,
+    required this.callBack,
+    required this.tabList,
+  });
+  final void Function(int) callBack;
+  final double tabIndex;
+  final List<Tabs> tabList;
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +88,17 @@ class TabBar extends StatelessWidget {
       height: 62.h,
       width: 375.w,
       child: Row(
-        children: Tabs.values
+        children: tabList
+            .asMap()
+            .entries
             .map(
-              (Tabs tab) =>
-                  Tab(tab: tab, selectedTab: selectedTab, callBack: callBack),
+              (MapEntry<int, Tabs> tabEntry) => Tab(
+                tab: tabEntry.value,
+                colorFactor: pow(tabIndex - tabEntry.key, 2) > 1
+                    ? 1
+                    : pow(tabIndex - tabEntry.key, 2).toDouble(),
+                callBack: () => callBack(tabEntry.key),
+              ),
             )
             .toList(),
       ),
@@ -81,21 +109,19 @@ class TabBar extends StatelessWidget {
 class Tab extends StatelessWidget {
   const Tab({
     super.key,
-    required this.selectedTab,
+    required this.colorFactor,
     required this.tab,
     required this.callBack,
   });
 
   final Tabs tab;
-  final Tabs selectedTab;
-  final void Function(Tabs p1) callBack;
+  final double colorFactor;
+  final VoidCallback callBack;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        callBack(tab);
-      },
+      onTap: callBack,
       behavior: HitTestBehavior.translucent,
       child: SizedBox(
         height: 62.h,
@@ -107,9 +133,11 @@ class Tab extends StatelessWidget {
               tab.iconPath,
               height: 18.h,
               width: 20.w,
-              color: tab == selectedTab
-                  ? const Color(0xFF000000)
-                  : const Color(0xFF5E5E5E),
+              color: Color.lerp(
+                const Color(0xFF000000),
+                const Color(0xFF5E5E5E),
+                colorFactor,
+              ),
             ),
             SizedBox(
               height: 16.h,
@@ -117,9 +145,11 @@ class Tab extends StatelessWidget {
                 tab.title,
                 style: TextStyle(
                   fontSize: 12.sp,
-                  color: tab == selectedTab
-                      ? const Color(0xFF000000)
-                      : const Color(0xFF5E5E5E),
+                  color: Color.lerp(
+                    const Color(0xFF000000),
+                    const Color(0xFF5E5E5E),
+                    colorFactor,
+                  ),
                   fontFamily: 'UberMove',
                   fontWeight: FontWeight.w500,
                 ),
@@ -145,13 +175,13 @@ enum Tabs implements Comparable<Tabs> {
   Widget get widget {
     switch (this) {
       case Tabs.home:
-        return const Icon(Icons.home);
+        return const SearchTabView();
       case Tabs.history:
-        return const Icon(Icons.history);
+        return const HistoryTabView();
       case Tabs.favorites:
-        return const Icon(Icons.favorite);
+        return const FavoritesTabView();
       case Tabs.settings:
-        return const Icon(Icons.settings);
+        return const SettingsTabView();
     }
   }
 
