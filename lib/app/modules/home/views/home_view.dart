@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:learneng/app/modules/favorites_tab/views/favorites_tab_view.dart';
 import 'package:learneng/app/modules/history_tab/views/history_tab_view.dart';
+import 'package:learneng/app/modules/search_tab/controllers/search_tab_controller.dart';
 import 'package:learneng/app/modules/search_tab/views/search_tab_view.dart';
 import 'package:learneng/app/modules/settings_tab/views/settings_tab_view.dart';
 
@@ -175,6 +176,7 @@ enum Tabs implements Comparable<Tabs> {
   Widget get widget {
     switch (this) {
       case Tabs.home:
+        Get.put(SearchTabController());
         return const SearchTabView();
       case Tabs.history:
         return const HistoryTabView();
