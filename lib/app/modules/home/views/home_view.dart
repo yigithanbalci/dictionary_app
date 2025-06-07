@@ -21,46 +21,48 @@ class HomeView extends GetView<HomeController> {
     return Scaffold(
       body: SizedBox(
         child: Obx(
-          () => Column(
-            children: [
-              Container(color: const Color(0xFFA964F7), height: 48.h),
-              Container(
-                color: const Color(0xFFA964F7),
-                height: 32.h,
-                width: 375.w,
-                child: Center(
-                  child: Text(
-                    'LearnEng',
-                    style: TextStyle(
-                      fontSize: 20.sp,
-                      color: const Color(0xFFFFFFFF),
-                      fontFamily: 'UberMove',
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: -0.41,
+          () => SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(color: const Color(0xFFA964F7), height: 48.h),
+                Container(
+                  color: const Color(0xFFA964F7),
+                  height: 32.h,
+                  width: 375.w,
+                  child: Center(
+                    child: Text(
+                      'LearnEng',
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        color: const Color(0xFFFFFFFF),
+                        fontFamily: 'UberMove',
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.41,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                color: const Color(0xFFFFFFFF),
-                height: 658.h,
-                width: 375.w,
-                child: PageView.builder(
-                  controller: controller.pageController,
-                  itemCount: tabList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    // controller.selectedTab.value.widget
-                    return tabList[index].widget;
-                  },
+                Container(
+                  color: const Color(0xFFFFFFFF),
+                  height: 658.h,
+                  width: 375.w,
+                  child: PageView.builder(
+                    controller: controller.pageController,
+                    itemCount: tabList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      // controller.selectedTab.value.widget
+                      return tabList[index].widget;
+                    },
+                  ),
                 ),
-              ),
-              TabBar(
-                tabIndex: controller.tabIndex.value,
-                callBack: controller.handleTabSelection,
-                tabList: tabList,
-              ),
-              Container(color: const Color(0x88E8E8E8), height: 12.h),
-            ],
+                TabBar(
+                  tabIndex: controller.tabIndex.value,
+                  callBack: controller.handleTabSelection,
+                  tabList: tabList,
+                ),
+                Container(color: const Color(0x88E8E8E8), height: 12.h),
+              ],
+            ),
           ),
         ),
       ),
