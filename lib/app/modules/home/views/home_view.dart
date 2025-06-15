@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:learneng/app/modules/favorites_tab/controllers/favorites_tab_controller.dart';
 import 'package:learneng/app/modules/favorites_tab/views/favorites_tab_view.dart';
+import 'package:learneng/app/modules/history_tab/controllers/history_tab_controller.dart';
 import 'package:learneng/app/modules/history_tab/views/history_tab_view.dart';
 import 'package:learneng/app/modules/search_tab/controllers/search_tab_controller.dart';
 import 'package:learneng/app/modules/search_tab/views/search_tab_view.dart';
@@ -181,8 +183,10 @@ enum Tabs implements Comparable<Tabs> {
         Get.put(SearchTabController());
         return const SearchTabView();
       case Tabs.history:
+        Get.put(HistoryTabController());
         return const HistoryTabView();
       case Tabs.favorites:
+        Get.put(FavoritesTabController());
         return const FavoritesTabView();
       case Tabs.settings:
         return const SettingsTabView();

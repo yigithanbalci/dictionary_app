@@ -24,7 +24,7 @@ class SearchTabView extends GetView<SearchTabController> {
           ),
           Obx(
             () => Expanded(
-              child: controller.wordList.isNotEmpty
+              child: controller.searchState.value == SearchState.searching
                   ? ListView.builder(
                       padding: EdgeInsets.zero,
                       itemCount: controller.wordList.length,
@@ -35,7 +35,7 @@ class SearchTabView extends GetView<SearchTabController> {
                             onTap: controller.handleWordSelectionByIndex,
                           ),
                     )
-                  : controller.resultList.isNotEmpty
+                  : controller.searchState.value == SearchState.result
                   ? ListView.builder(
                       padding: EdgeInsets.zero,
                       itemCount: controller.resultList.length,
@@ -54,6 +54,8 @@ class SearchTabView extends GetView<SearchTabController> {
     );
   }
 }
+
+enum SearchState { init, searching, result }
 
 class ResultElement extends StatelessWidget {
   const ResultElement({

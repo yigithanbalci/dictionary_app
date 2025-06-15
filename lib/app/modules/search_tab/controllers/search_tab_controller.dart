@@ -7,19 +7,22 @@ class SearchTabController extends GetxController {
 
   final RxList<String> wordList = <String>[].obs;
   final RxList<Word> resultList = <Word>[].obs;
+  final Rx<SearchState> searchState = SearchState.init.obs;
   @override
   void onInit() {
     super.onInit();
     searchController.addListener(() {
       // You can add any logic here that needs to be executed when the text changes
-      resultList.clear();
       if (searchController.text.length >= 3) {
         // For example, you can filter the wordList based on the search input
+        searchState.value = SearchState.searching;
         wordList.value = List<String>.generate(
           15,
           (int index) =>
               searchController.text + String.fromCharCode(index + 97),
         );
+      } else {
+        searchState.value = SearchState.init;
       }
     });
   }
@@ -39,8 +42,7 @@ class SearchTabController extends GetxController {
   }
 
   void handleWordSelection(String toSearch) {
-    searchController.clear();
-    wordList.clear();
+    searchState.value = SearchState.result;
     final String word = toSearch.trim().toLowerCase();
     print('Selected word: $word');
     resultList.value = [
